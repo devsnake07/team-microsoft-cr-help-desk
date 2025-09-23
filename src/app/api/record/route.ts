@@ -45,7 +45,7 @@ export async function POST(request: Request) {
       // Create a unique filename
       const filename = `${Date.now()}.${extension}`
 
-      const blob = await put(filename, image, { access: 'public', addRandomSuffix: true })
+      const blob = await put(image, filename, { access: 'public', addRandomSuffix: true })
 
       // Set the URL to be saved in the database
       imageUrl = blob.url
