@@ -12,8 +12,7 @@ import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
-
-import Button from '@mui/material/Button'
+import LoadingButton from '@mui/lab/LoadingButton'
 
 // Third-party Imports
 import { signIn } from 'next-auth/react'
@@ -57,6 +56,7 @@ const Login = ({ mode }: { mode: Mode }) => {
   // States
   const [isPasswordShown, setIsPasswordShown] = useState(false)
   const [errorState, setErrorState] = useState<ErrorType | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   // Vars
   const darkImg = '/images/pages/auth-v2-mask-1-dark.png'
@@ -85,11 +85,16 @@ const Login = ({ mode }: { mode: Mode }) => {
   const handleClickShowPassword = () => setIsPasswordShown(show => !show)
 
   const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
+    setIsLoading(true)
+    setErrorState(null)
+
     const res = await signIn('credentials', {
       email: data.email,
       password: data.password,
       redirect: false
     })
+
+    setIsLoading(false)
 
     if (res && res.ok && res.error === null) {
       // Vars
@@ -139,6 +144,7 @@ const Login = ({ mode }: { mode: Mode }) => {
                   {...field}
                   fullWidth
                   autoFocus
+                  disabled={isLoading}
                   type='email'
                   label='Email'
                   onChange={e => {
@@ -160,6 +166,7 @@ const Login = ({ mode }: { mode: Mode }) => {
                 <TextField
                   {...field}
                   fullWidth
+                  disabled={isLoading}
                   label='Password'
                   id='login-password'
                   type={isPasswordShown ? 'text' : 'password'}
@@ -188,9 +195,9 @@ const Login = ({ mode }: { mode: Mode }) => {
               )}
             />
 
-            <Button fullWidth variant='contained' type='submit'>
+            <LoadingButton fullWidth loading={isLoading} variant='contained' type='submit'>
               Log In
-            </Button>
+            </LoadingButton>
             <div className='flex justify-center items-center flex-wrap gap-2'>
               <Typography>New on our platform?</Typography>
               <Typography component={Link} href={getLocalizedUrl('/register', locale as Locale)} color='primary.main'>
