@@ -1,9 +1,8 @@
-import fs from 'fs'
-import path from 'path'
-
 import { NextResponse } from 'next/server'
 
 import { PrismaClient } from '@prisma/client'
+
+import { put } from '@vercel/blob'
 
 import { saveBinnacleEntry, actions } from '@/services/binnacle'
 
@@ -60,14 +59,16 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 
     if (matches) {
       const [, extension, base64Data] = matches
-      const buffer = Buffer.from(base64Data, 'base64')
-      const filename = `${Date.now()}.${extension}`
-      const screenshotsDir = path.join(process.cwd(), 'public', 'screenshots')
-      const filePath = path.join(screenshotsDir, filename)
 
-      fs.mkdirSync(screenshotsDir, { recursive: true })
-      fs.writeFileSync(filePath, buffer)
-      imageUrl = `/screenshots/${filename}`
+      // Create a unique filename
+      const filename = `${Date.now()}.${extension}`
+
+      const buffer = Buffer.from(base64Data, 'base64')
+
+      // The first argument to `put` is the filename, and the second is the file content.
+      const blob = await put(filename, buffer, { access: 'public', addRandomSuffix: true })
+
+      imageUrl = blob.url
     }
   }
 
