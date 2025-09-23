@@ -175,12 +175,6 @@ const Customizer = ({ breakpoint = 'lg', dir = 'ltr', disableDirection = false }
           [styles.smallScreen]: isMobileScreen
         })}
       >
-        <div
-          className={classnames('customizer-toggler flex items-center justify-center cursor-pointer', styles.toggler)}
-          onClick={handleToggle}
-        >
-          <i className='ri-settings-5-line text-[22px]' />
-        </div>
         <div className={classnames('customizer-header flex items-center justify-between', styles.header)}>
           <div className='flex flex-col gap-2'>
             <h4 className={styles.customizerTitle}>Theme Customizer</h4>

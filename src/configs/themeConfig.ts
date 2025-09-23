@@ -16,6 +16,9 @@
  * Another way is to clear the cookie from the browser's Application/Storage tab and then reload the page.
  */
 
+// Third-party Imports
+import type { ToastPosition } from 'react-toastify'
+
 // Type Imports
 import type { Mode, Skin, Layout, LayoutComponentPosition, LayoutComponentWidth } from '@core/types'
 
@@ -47,11 +50,12 @@ export type Config = {
   compactContentWidth: number
   footer: Footer
   disableRipple: boolean
+  toastPosition: ToastPosition
 }
 
 const themeConfig: Config = {
-  templateName: 'Materialize',
-  homePageUrl: '/home',
+  templateName: 'Microsoft',
+  homePageUrl: '/dashboards/quick', // For demo purpose, it can be any route of your choice
   settingsCookieName: 'materialize-mui-next-demo-1',
   mode: 'system', // 'system', 'light', 'dark'
   skin: 'default', // 'default', 'bordered'
@@ -72,7 +76,8 @@ const themeConfig: Config = {
     contentWidth: 'compact', // 'compact', 'wide'
     detached: true //! true, false (This will not work in the Horizontal Layout)
   },
-  disableRipple: false // true, false
+  disableRipple: false, // true, false
+  toastPosition: 'top-right' // 'top-right', 'top-center', 'top-left', 'bottom-right', 'bottom-center', 'bottom-left'
 }
 
 export default themeConfig

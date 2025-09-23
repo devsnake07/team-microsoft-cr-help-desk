@@ -1,14 +1,21 @@
+// Next Imports
+import { useParams } from 'next/navigation'
+
 // MUI Imports
 import { useTheme } from '@mui/material/styles'
+import Chip from '@mui/material/Chip'
 
 // Third-party Imports
 import PerfectScrollbar from 'react-perfect-scrollbar'
 
 // Type Imports
+import type { getDictionary } from '@/utils/getDictionary'
 import type { VerticalMenuContextProps } from '@menu/components/vertical-menu/Menu'
 
 // Component Imports
-import { Menu, MenuItem } from '@menu/vertical-menu'
+import { Menu, SubMenu, MenuItem, MenuSection } from '@menu/vertical-menu'
+
+// import { GenerateVerticalMenu } from '@components/GenerateMenu'
 
 // Hook Imports
 import useVerticalNav from '@menu/hooks/useVerticalNav'
@@ -20,12 +27,16 @@ import StyledVerticalNavExpandIcon from '@menu/styles/vertical/StyledVerticalNav
 import menuItemStyles from '@core/styles/vertical/menuItemStyles'
 import menuSectionStyles from '@core/styles/vertical/menuSectionStyles'
 
+// Menu Data Imports
+// import menuData from '@/data/navigation/verticalMenuData'
+
 type RenderExpandIconProps = {
   open?: boolean
   transitionDuration?: VerticalMenuContextProps['transitionDuration']
 }
 
 type Props = {
+  dictionary: Awaited<ReturnType<typeof getDictionary>>
   scrollMenu: (container: any, isPerfectScrollbar: boolean) => void
 }
 
@@ -35,13 +46,15 @@ const RenderExpandIcon = ({ open, transitionDuration }: RenderExpandIconProps) =
   </StyledVerticalNavExpandIcon>
 )
 
-const VerticalMenu = ({ scrollMenu }: Props) => {
+const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
   // Hooks
   const theme = useTheme()
   const verticalNavOptions = useVerticalNav()
+  const params = useParams()
 
   // Vars
   const { isBreakpointReached, transitionDuration } = verticalNavOptions
+  const { lang: locale } = params
 
   const ScrollWrapper = isBreakpointReached ? 'div' : PerfectScrollbar
 
@@ -68,12 +81,18 @@ const VerticalMenu = ({ scrollMenu }: Props) => {
         renderExpandedMenuItemIcon={{ icon: <i className='ri-circle-fill' /> }}
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
-        <MenuItem href='/home' icon={<i className='ri-home-smile-line' />}>
-          Home
-        </MenuItem>
-        <MenuItem href='/about' icon={<i className='ri-information-line' />}>
-          About
-        </MenuItem>
+        <SubMenu
+          label={dictionary['navigation'].activities}
+          icon={<i className='ri-home-smile-line' />}
+          suffix={<Chip label='5' size='small' color='error' />}
+        >
+          <MenuItem href={`/${locale}/dashboards/quick`}>{dictionary['navigation'].quickAnalitycs}</MenuItem>
+          <MenuItem href={`/${locale}/records`}>{dictionary['navigation'].records}</MenuItem>
+          <MenuItem href={`/${locale}/categories`}>{dictionary['navigation'].categories}</MenuItem>
+          <MenuItem href={`/${locale}/report`}>{dictionary['navigation'].report}</MenuItem>
+          <MenuItem href={`/${locale}/users`}>{dictionary['navigation'].members}</MenuItem>
+          <MenuItem href={`/${locale}/binnacle`}>{dictionary['navigation'].binnacle}</MenuItem>
+        </SubMenu>
       </Menu>
       {/* <Menu
         popoutMenuOffset={{ mainAxis: 17 }}
