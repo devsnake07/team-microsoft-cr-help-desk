@@ -28,6 +28,7 @@ import Avatar from '@mui/material/Avatar'
 import FormHelperText from '@mui/material/FormHelperText'
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
+import LoadingButton from '@mui/lab/LoadingButton'
 
 // Type Imports
 import type { Category, Record, User } from '@prisma/client'
@@ -122,6 +123,9 @@ const Main = () => {
 
   // Global search state
   const [searchText, setSearchText] = useState('')
+
+  // Submission loading state
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -279,6 +283,8 @@ const Main = () => {
       return
     }
 
+    setIsSubmitting(true)
+
     try {
       const body = {
         userId: session.user.id,
@@ -306,6 +312,8 @@ const Main = () => {
       }
     } catch (error) {
       console.error('Failed to create record', error)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -356,6 +364,8 @@ const Main = () => {
     e.preventDefault()
     if (!editingRecord || !validateEditForm()) return
 
+    setIsSubmitting(true)
+
     try {
       const body = {
         ...editingRecord,
@@ -376,6 +386,8 @@ const Main = () => {
       }
     } catch (error) {
       console.error('Failed to update record', error)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -613,9 +625,9 @@ const Main = () => {
                 </Grid>
 
                 <Grid size={{ xs: 12 }}>
-                  <Button variant='contained' type='submit'>
+                  <LoadingButton loading={isSubmitting} variant='contained' type='submit'>
                     Save Record
-                  </Button>
+                  </LoadingButton>
                 </Grid>
               </Grid>
             </form>
@@ -725,9 +737,9 @@ const Main = () => {
                   {formErrors.image && <FormHelperText error>{formErrors.image}</FormHelperText>}
                 </Grid>
                 <Grid size={{ xs: 12 }} display='flex' gap={4}>
-                  <Button variant='contained' type='submit'>
+                  <LoadingButton loading={isSubmitting} variant='contained' type='submit'>
                     Save Changes
-                  </Button>
+                  </LoadingButton>
                   <Button variant='outlined' color='secondary' onClick={handleCloseEditModal}>
                     Cancel
                   </Button>
