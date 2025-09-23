@@ -29,6 +29,7 @@ import FormHelperText from '@mui/material/FormHelperText'
 import Modal from '@mui/material/Modal'
 import Box from '@mui/material/Box'
 import LoadingButton from '@mui/lab/LoadingButton'
+import CircularProgress from '@mui/material/CircularProgress'
 
 // Type Imports
 import type { Category, Record, User } from '@prisma/client'
@@ -126,6 +127,7 @@ const Main = () => {
 
   // Submission loading state
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -396,6 +398,8 @@ const Main = () => {
       return
     }
 
+    setDeletingId(id)
+
     try {
       const res = await fetch(`/api/record/${id}`, {
         method: 'DELETE'
@@ -408,6 +412,8 @@ const Main = () => {
       }
     } catch (error) {
       console.error('Failed to delete record', error)
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -452,14 +458,16 @@ const Main = () => {
       sortable: false,
       renderCell: params => {
         // Only show actions if the logged-in user created the record
+        const isDeleting = deletingId === params.row.id
+
         if (session?.user?.id === params.row.userId) {
           return (
             <Box>
-              <IconButton onClick={() => handleOpenEditModal(params.row)} size='small'>
+              <IconButton onClick={() => handleOpenEditModal(params.row)} size='small' disabled={isDeleting}>
                 <i className='ri-pencil-line' />
               </IconButton>
-              <IconButton onClick={() => handleDelete(params.row.id)} size='small'>
-                <i className='ri-delete-bin-line' />
+              <IconButton onClick={() => handleDelete(params.row.id)} size='small' disabled={isDeleting}>
+                {isDeleting ? <CircularProgress size={20} color='inherit' /> : <i className='ri-delete-bin-line' />}
               </IconButton>
             </Box>
           )
