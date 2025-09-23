@@ -22,6 +22,8 @@ import { object, minLength, string, email, pipe, nonEmpty } from 'valibot'
 import type { SubmitHandler } from 'react-hook-form'
 import type { InferInput } from 'valibot'
 import classnames from 'classnames'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 // Type Imports
 import type { Mode } from '@core/types'
@@ -37,10 +39,6 @@ import { useSettings } from '@core/hooks/useSettings'
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
 
-type ErrorType = {
-  message: string[]
-}
-
 type FormData = InferInput<typeof schema>
 
 const schema = object({
@@ -55,7 +53,6 @@ const schema = object({
 const Login = ({ mode }: { mode: Mode }) => {
   // States
   const [isPasswordShown, setIsPasswordShown] = useState(false)
-  const [errorState, setErrorState] = useState<ErrorType | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   // Vars
@@ -86,7 +83,6 @@ const Login = ({ mode }: { mode: Mode }) => {
 
   const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
     setIsLoading(true)
-    setErrorState(null)
 
     const res = await signIn('credentials', {
       email: data.email,
@@ -102,11 +98,7 @@ const Login = ({ mode }: { mode: Mode }) => {
 
       router.replace(getLocalizedUrl(redirectURL, locale as Locale))
     } else {
-      if (res?.error) {
-        const error = JSON.parse(res.error)
-
-        setErrorState(error)
-      }
+      toast.error('User or password are incorrect')
     }
   }
 
@@ -124,6 +116,7 @@ const Login = ({ mode }: { mode: Mode }) => {
         <img src={authBackground} className='absolute bottom-[4%] z-[-1] is-full max-md:hidden' />
       </div>
       <div className='flex justify-center items-center bs-full bg-backgroundPaper !min-is-full p-6 md:!min-is-[unset] md:p-12 md:is-[480px]'>
+        <ToastContainer theme={mode} />
         <div className='absolute block-start-5 sm:block-start-[38px] inline-start-6 sm:inline-start-[38px]'>
           <Logo />
         </div>
@@ -147,13 +140,9 @@ const Login = ({ mode }: { mode: Mode }) => {
                   disabled={isLoading}
                   type='email'
                   label='Email'
-                  onChange={e => {
-                    field.onChange(e.target.value)
-                    errorState !== null && setErrorState(null)
-                  }}
-                  {...((errors.email || errorState !== null) && {
+                  {...(errors.email && {
                     error: true,
-                    helperText: errors?.email?.message || errorState?.message[0]
+                    helperText: errors.email.message
                   })}
                 />
               )}
@@ -170,10 +159,6 @@ const Login = ({ mode }: { mode: Mode }) => {
                   label='Password'
                   id='login-password'
                   type={isPasswordShown ? 'text' : 'password'}
-                  onChange={e => {
-                    field.onChange(e.target.value)
-                    errorState !== null && setErrorState(null)
-                  }}
                   slotProps={{
                     input: {
                       endAdornment: (
