@@ -6,7 +6,7 @@ import { saveBinnacleEntry, actions } from '@/services/binnacle'
 
 const prisma = new PrismaClient()
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params
   const { id } = resolvedParams
   const body = await request.json()
@@ -20,7 +20,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       }
     })
 
-    await saveBinnacleEntry({ action: actions.DELETE_CATEGORY, details: JSON.stringify(body) })
+    await saveBinnacleEntry({ action: actions.UPDATE_CATEGORY, details: JSON.stringify(body) })
 
     return NextResponse.json(updatedCategory)
   } catch (error: any) {
@@ -34,8 +34,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params
+  const { id } = resolvedParams
 
   try {
     await prisma.category.delete({

@@ -4,8 +4,9 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const id = params.id
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params
+  const { id } = resolvedParams
 
   try {
     const user = await prisma.user.delete({

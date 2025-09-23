@@ -10,8 +10,9 @@ import { saveBinnacleEntry, actions } from '@/services/binnacle'
 const prisma = new PrismaClient()
 
 // GET a single record by ID
-export async function GET(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params
+  const { id } = resolvedParams
 
   try {
     const record = await prisma.record.findUnique({
@@ -44,7 +45,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
 }
 
 // PUT (update) a record by ID
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = await params
   const { id } = resolvedParams
   const body = await request.json()
@@ -104,8 +105,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 }
 
 // DELETE a record by ID
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params
+  const { id } = resolvedParams
 
   try {
     await prisma.record.delete({
