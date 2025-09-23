@@ -40,12 +40,15 @@ export async function POST(request: Request) {
     const matches = image.match(/^data:image\/(\w+);base64,(.+)$/)
 
     if (matches) {
-      const [, extension] = matches
+      const [, extension, base64Data] = matches
 
       // Create a unique filename
       const filename = `${Date.now()}.${extension}`
 
-      const blob = await put(image, filename, { access: 'public', addRandomSuffix: true })
+      const buffer = Buffer.from(base64Data, 'base64')
+
+      // The first argument to `put` is the filename, and the second is the file content.
+      const blob = await put(filename, buffer, { access: 'public', addRandomSuffix: true })
 
       // Set the URL to be saved in the database
       imageUrl = blob.url
