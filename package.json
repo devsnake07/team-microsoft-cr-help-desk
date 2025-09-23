@@ -62,8 +62,8 @@
     "keen-slider": "6.8.6",
     "mapbox-gl": "3.9.0",
     "negotiator": "1.0.0",
-    "next": "^15.5.3",
-    "next-auth": "^4.24.7",
+    "next": "15.1.2",
+    "next-auth": "4.24.11",
     "react": "18.3.1",
     "react-apexcharts": "1.4.1",
     "react-colorful": "5.6.1",
@@ -114,7 +114,7 @@
     "stylis-plugin-rtl": "2.1.1",
     "tailwindcss": "3.4.17",
     "tailwindcss-logical": "3.0.1",
-    "tsx": "^4.20.5",
+    "tsx": "4.19.2",
     "typescript": "5.5.4"
   },
   "resolutions": {
