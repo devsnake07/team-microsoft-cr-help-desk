@@ -1,8 +1,6 @@
-import fs from 'fs'
-
-import path from 'path'
-
 import { NextResponse } from 'next/server'
+
+import { put } from '@vercel/blob'
 
 import { PrismaClient } from '@prisma/client'
 
@@ -42,24 +40,15 @@ export async function POST(request: Request) {
     const matches = image.match(/^data:image\/(\w+);base64,(.+)$/)
 
     if (matches) {
-      const [, extension, base64Data] = matches
-      const buffer = Buffer.from(base64Data, 'base64')
+      const [, extension] = matches
 
       // Create a unique filename
       const filename = `${Date.now()}.${extension}`
 
-      // Define the path to save the image
-      const screenshotsDir = path.join(process.cwd(), 'public', 'screenshots')
-      const filePath = path.join(screenshotsDir, filename)
-
-      // Ensure the directory exists
-      fs.mkdirSync(screenshotsDir, { recursive: true })
-
-      // Write the file
-      fs.writeFileSync(filePath, buffer)
+      const blob = await put(filename, image, { access: 'public', addRandomSuffix: true })
 
       // Set the URL to be saved in the database
-      imageUrl = `/screenshots/${filename}`
+      imageUrl = blob.url
     }
   }
 
