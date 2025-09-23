@@ -12,9 +12,8 @@ import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
-import Checkbox from '@mui/material/Checkbox'
+
 import Button from '@mui/material/Button'
-import FormControlLabel from '@mui/material/FormControlLabel'
 
 // Third-party Imports
 import { signIn } from 'next-auth/react'
