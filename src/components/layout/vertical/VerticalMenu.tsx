@@ -84,7 +84,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         <SubMenu
           label={dictionary['navigation'].activities}
           icon={<i className='ri-home-smile-line' />}
-          suffix={<Chip label='5' size='small' color='error' />}
+
         >
           <MenuItem href={`/${locale}/dashboards/quick`}>{dictionary['navigation'].quickAnalitycs}</MenuItem>
           <MenuItem href={`/${locale}/records`}>{dictionary['navigation'].records}</MenuItem>
