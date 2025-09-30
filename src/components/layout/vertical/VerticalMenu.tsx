@@ -81,11 +81,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         renderExpandedMenuItemIcon={{ icon: <i className='ri-circle-fill' /> }}
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
-        <SubMenu
-          label={dictionary['navigation'].activities}
-          icon={<i className='ri-home-smile-line' />}
-
-        >
+        <SubMenu label={dictionary['navigation'].activities} icon={<i className='ri-home-smile-line' />}>
           <MenuItem href={`/${locale}/dashboards/quick`}>{dictionary['navigation'].quickAnalitycs}</MenuItem>
           <MenuItem href={`/${locale}/records`}>{dictionary['navigation'].records}</MenuItem>
           <MenuItem href={`/${locale}/categories`}>{dictionary['navigation'].categories}</MenuItem>
